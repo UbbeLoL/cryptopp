@@ -100,6 +100,16 @@ if(MINGW OR WIN32)
 	list(APPEND cryptopp_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/winpipes.cpp)
 endif()
 
+if(MSVC)
+	foreach(flag_var
+			CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
+			CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+	   if(${flag_var} MATCHES "/MD")
+		  string(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
+	   endif(${flag_var} MATCHES "/MD")
+	endforeach(flag_var)
+endif()
+
 if(MSVC AND NOT DISABLE_ASM)
 	if(${CMAKE_GENERATOR} MATCHES ".*ARM")
 		message(STATUS "Disabling ASM because ARM is specified as target platform.")
